@@ -24,7 +24,7 @@ class CfgVehicles {
 		author = "CryptikLemur";
 		displayName = "";
 		icon = "";
-		scope = 1;
+		scope = 2;
 		scopeCurator = 1;
 		curatorCanAttach = 1;
 		function = "";
@@ -40,7 +40,7 @@ class CfgVehicles {
 		category = "Supports";
 		function = QFUNC(moduleAddHeliQRFS);
 		scope = 2;
-		scopeCurator = 2;
+		scopeCurator = 1;
 
 		class Arguments {
 			class Side {
@@ -69,6 +69,12 @@ class CfgVehicles {
 				typeName = "STRING";
 				defaultValue = DEFAULT_VEHICLE_HELI;
 			};
+			class Units {
+				displayName = "Units";
+				description = "Classnames of the units that will be in each helicopter";
+				typeName = "ARRAY";
+				defaultValue = DEFAULT_UNITS;
+			};
 			class Dropoff {
 				displayName = "Dropoff Style";
 				description = "How should the units be dropped off";
@@ -95,6 +101,18 @@ class CfgVehicles {
 				typeName = "NUMBER";
 				defaultValue = DEFAULT_VEHICLE_COUNT;
 			};
+			class Size {
+			    displayName = "Size";
+                description = "How far away will the module search for enemy soldiers? (X, Y, Z)";
+                typeName = "ARRAY";
+                defaultValue = "[250, 250, 100]";
+			};
+			class TriggerTimeout {
+			    displayName = "Trigger Timeout";
+			    description = "Time required for enemy units to be in the AO ([mid, min, max])";
+			    typeName = "ARRAY";
+			    defaultValue = "[0, 0, 0]";
+			}
 		};
 	};
 };

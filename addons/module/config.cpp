@@ -17,6 +17,7 @@ class CfgPatches {
             "qrfs_main"
         };
         author = "CryptikLemur";
+        VERSION_CONFIG;
     };
 };
 

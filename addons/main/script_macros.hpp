@@ -13,7 +13,7 @@
     #define PREP(fncName) [QPATHTOF(functions\DOUBLES(fnc,fncName).sqf), QFUNC(fncName)] call CBA_fnc_compileFunction
 #endif
 
-#define QFRS_CHAT(MESSAGE) \
+#define QRFS_CHAT(MESSAGE) \
 	private _logMessage = format ["QRFS - %1",MESSAGE]; \
 	systemChat _logMessage;
 #define QRFS_LOG(MESSAGE) \
@@ -59,6 +59,7 @@
 #define DEFAULT_VEHICLE_COUNT 1
 
 #define DEFAULT_VEHICLE_HELI "O_Heli_Light_02_dynamicLoadout_F"
+#define DEFAULT_UNITS "[\"O_G_Soldier_SL_F\", \"O_G_medic_F\", \"O_G_Soldier_AR_F\", \"O_G_Soldier_M_F\", \"O_G_Soldier_LAT_F\", \"O_G_Soldier_A_F\"]"
 
 #define DEFAULT_VEHICLE_BEHAVIOR "combat"
 #define DEFAULT_VEHICLE_SPEED "full"
