@@ -23,6 +23,16 @@ class CfgPatches {
 
 #include "CfgEventHandlers.hpp"
 
+class CfgFunctions {
+	class qrfs_module {
+		class Main {
+				file = "z\qrfs\addons\module\functions";
+				class follow {};
+				class callInHeliQRF {};
+		};
+	};
+};
+
 class CfgFactionClasses {
     class qrfsBase;
     class qrfs_module: qrfsBase {

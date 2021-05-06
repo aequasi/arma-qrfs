@@ -32,6 +32,11 @@ class CfgVehicles {
 		isGlobal = 1;
 		isTriggerActivated = 0;
 		isDisposable = 0;
+		canSetArea = 1;
+
+		class AttributeValues {
+			size3[] = {5, 5, 100};
+		}
 	};
 
 	class GVAR(AddHeliQRFS) : GVAR(Base) {
@@ -43,37 +48,17 @@ class CfgVehicles {
 		scopeCurator = 1;
 
 		class Arguments {
-			class Side {
-				displayName = "Side";
-				description = "Support side";
-				typeName = "NUMBER";
-				class values {
-					class BLUFOR {
-						name = "BLUFOR";
-						value = 0;
-					};
-					class OPFOR {
-						default = 1;
-						name = "OPFOR";
-						value = 1;
-					};
-					class Independent {
-						name = "Independent";
-						value = 2;
-					};
-				};
-			};
 			class Classname {
 				displayName = "Classname";
 				description = "Classname of helicopter";
 				typeName = "STRING";
-				defaultValue = DEFAULT_VEHICLE_HELI;
+				defaultValue = "O_Heli_Light_02_dynamicLoadout_F";
 			};
 			class Units {
 				displayName = "Units";
 				description = "Classnames of the units that will be in each helicopter";
-				typeName = "ARRAY";
-				defaultValue = DEFAULT_UNITS;
+				typeName = "STRING";
+				defaultValue = "[""O_G_Soldier_SL_F"", ""O_G_medic_F"", ""O_G_Soldier_AR_F"", ""O_G_Soldier_M_F"", ""O_G_Soldier_LAT_F"", ""O_G_Soldier_A_F"", ""O_G_Soldier_F"", ""O_G_Soldier_F""]";
 			};
 			class Dropoff {
 				displayName = "Dropoff Style";
@@ -101,18 +86,36 @@ class CfgVehicles {
 				typeName = "NUMBER";
 				defaultValue = DEFAULT_VEHICLE_COUNT;
 			};
-			class Size {
-			    displayName = "Size";
-                description = "How far away will the module search for enemy soldiers? (X, Y, Z)";
-                typeName = "ARRAY";
-                defaultValue = "[250, 250, 100]";
-			};
 			class TriggerTimeout {
 			    displayName = "Trigger Timeout";
 			    description = "Time required for enemy units to be in the AO ([mid, min, max])";
 			    typeName = "ARRAY";
-			    defaultValue = "[0, 0, 0]";
-			}
+			    defaultValue = "[5, 5, 5]";
+			};
+			class Origin {
+				displayName = "Origin";
+				description = "Where does the helicopter come from in regards to the point, as a bearing? 'random' will do a random direction.";
+				typeName = "STRING";
+				defaultValue = "random";
+			};
+			class Distance {
+				displayName = "Distance";
+				description = "How far away does the helicopter spawn?";
+				typeName = "NUMBER";
+				defaultValue = 1500;
+			};
+			class LandingDistance {
+				displayName = "Landing Distance";
+				description = "How far away does the helicopter land?";
+				typeName = "NUMBER";
+				defaultValue = 300;
+			};
+			class Condition {
+				displayName = "Condition";
+				description = "Condition for the qrf trigger to fire";
+				typeName = "STRING";
+				defaultValue = "true";
+			};
 		};
 	};
 };
