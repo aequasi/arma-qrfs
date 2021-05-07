@@ -27,7 +27,6 @@ class CfgFunctions {
 	class qrfs_module {
 		class Main {
 				file = "z\qrfs\addons\module\functions";
-				class follow {};
 				class callInHeliQRF {};
 		};
 	};

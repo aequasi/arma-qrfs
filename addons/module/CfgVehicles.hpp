@@ -52,39 +52,13 @@ class CfgVehicles {
 				displayName = "Classname";
 				description = "Classname of helicopter";
 				typeName = "STRING";
-				defaultValue = "O_Heli_Light_02_dynamicLoadout_F";
+				defaultValue = "O_Heli_Transport_04_bench_F";
 			};
 			class Units {
 				displayName = "Units";
 				description = "Classnames of the units that will be in each helicopter";
 				typeName = "STRING";
 				defaultValue = "[""O_G_Soldier_SL_F"", ""O_G_medic_F"", ""O_G_Soldier_AR_F"", ""O_G_Soldier_M_F"", ""O_G_Soldier_LAT_F"", ""O_G_Soldier_A_F"", ""O_G_Soldier_F"", ""O_G_Soldier_F""]";
-			};
-			class Dropoff {
-				displayName = "Dropoff Style";
-				description = "How should the units be dropped off";
-				typeName = "NUMBER";
-				class values {
-					class Land {
-						default = 1;
-						name = "Land";
-						value = 0;
-					};
-					class Fastrope {
-						name = "Fastrope";
-						value = 1;
-					};
-					class Parachute {
-						name = "Parachute";
-						value = 2;
-					};
-				};
-			};
-			class Count {
-				displayName = "Number of Vehicles";
-				description = "How many Vehicles with the QRF units will be sent";
-				typeName = "NUMBER";
-				defaultValue = DEFAULT_VEHICLE_COUNT;
 			};
 			class TriggerTimeout {
 			    displayName = "Trigger Timeout";
@@ -108,13 +82,13 @@ class CfgVehicles {
 				displayName = "Landing Distance";
 				description = "How far away does the helicopter land?";
 				typeName = "NUMBER";
-				defaultValue = 300;
+				defaultValue = 100;
 			};
 			class Condition {
 				displayName = "Condition";
 				description = "Condition for the qrf trigger to fire";
 				typeName = "STRING";
-				defaultValue = "true";
+				defaultValue = "this";
 			};
 		};
 	};
