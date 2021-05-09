@@ -58,6 +58,7 @@ private _landingDistance = param [5];
 private _grpSize = count _units;
 private _targetMarker = param [0];
 
+
 private ["_dir", "_e1", "_vehSpots", "_man"];
 
 if (typeName _origin == "STRING") then {
@@ -78,6 +79,7 @@ if (isNil("REKA60padArray")) then {
 	REKA60padArray = [];
 };
 private _targetPos = _tPos getPos [_landingDistance, _dir];
+
 private _finding = 1;
 private _ra = 0;//here
 while {_finding > 0} do {
@@ -99,7 +101,19 @@ while {_finding > 0} do {
 		};
 };
 REKA60padArray set [(count REKA60padArray), _targetPos];
-
+systemChat format ["Landing at %1 - Module at %2", _targetPos, _targetMarker];
+[_targetPos,_distance] spawn {
+	private["_targetPos","_a","_timesLimit","_distance"];
+	_targetPos = _this select 0;
+	_distance = _this select 1;
+	_a = 0;
+	_timesLimit = ceil(_distance / 1000);
+	while{_a < _timesLimit}do{
+		_smoke1 = "SmokeShellGreen" createVehicle _targetPos;
+		sleep 50;
+		_a = _a + 1;
+	};
+};
 private _heliPad = createVehicle ["Land_helipadEmpty_F", _targetPos, [], 0, "NONE"];
 private _range = _distance;
 private _pos = [(_targetPos select 0) + (sin _dir) * _range, (_targetPos select 1) + (cos _dir) * _range, 0];
@@ -146,6 +160,8 @@ private _heliCrewCount = count (crew _heli);
 { _x addCuratorEditableObjects [[_heli], true]; } forEach allCurators;
 
 [_heli, _targetPos, _grp2, _heliCrewCount, _pos, _targetMarker, _grp1, _distance] spawn {
+	private ["_wp"];
+
 	private _heli = _this select 0;
 	private _targetPos = _this select 1;
 	private _grp2 = _this select 2;
@@ -162,14 +178,9 @@ private _heliCrewCount = count (crew _heli);
 	_heli disableAI "AUTOTARGET";
 	_heli allowFleeing 0;
 	_heli setBehaviour "CARELESS";
-	_heli land "LAND"; //you can also try "GET OUT" (then it wont land, only hovers)
-	waitUntil {
-		sleep 2;
-		private _heliPos = getPos _heli;
-		private _height = _heliPos select 2;
+	_heli land "LAND";
 
-		_height <= 7;
-	};
+	waitUntil { sleep 2; (getPos _heli) select 2 <= 7 };
 	_heli setFuel 0;
 
 	_grp2 leaveVehicle _heli;
@@ -177,17 +188,12 @@ private _heliCrewCount = count (crew _heli);
     	unassignVehicle _x;
     	doGetOut _x;
     	_x setBehaviour "COMBAT";
+    	_x setUnitPos "UP";
     } forEach units _grp2;
 
     _grp2 setCombatMode "RED";
 
-    waitUntil {
-    	sleep 2;
-    	private _crew = count (crew _heli);
-    	systemChat format ["Crew in Heli: %1 - Waiting for %2", _crew, _heliCrewCount];
-
-    	_crew <= _heliCrewCount;
-	};
+    waitUntil { sleep 2; count (crew _heli) <= _heliCrewCount };
 
     _heli doMove _pos;
 
@@ -195,7 +201,7 @@ private _heliCrewCount = count (crew _heli);
     	_heli setFuel 1;
     };
 
-	private _wp = _grp2 addWaypoint [_targetMarker getPos [0, 0], 0];
+	_wp = _grp2 addWaypoint [_targetMarker getPos [0, 0], 0];
 	_wp setWaypointType "SAD";
 	_wp setWaypointBehaviour "COMBAT";
 	_wp setWaypointCombatMode "RED";
@@ -203,13 +209,13 @@ private _heliCrewCount = count (crew _heli);
 	_wp setWaypointSpeed "FULL";
 	_wp setWaypointVisible true;
 
-    waitUntil { sleep 4; _heli distance _pos <= _distance - 100 };
+    waitUntil { sleep 4; _heli distance _pos <= 100 };
 
     if (((_heli distance _targetPos) > 50)) then {
     	REKA60padArray = REKA60padArray - [_targetPos];
     };
 
-    if ((_heli distance _pos < _distance)) exitWith {
+    if ((_heli distance _pos < 100)) exitWith {
     	{ _heli deleteVehicleCrew _x } forEach crew _heli;
     	deleteVehicle _heli;
     	waitUntil { sleep 1; (count units _grp1) == 0 };

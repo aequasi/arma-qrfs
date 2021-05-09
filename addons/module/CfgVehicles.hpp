@@ -33,6 +33,8 @@ class CfgVehicles {
 		isTriggerActivated = 0;
 		isDisposable = 0;
 		canSetArea = 1;
+		canSetAreaHeight = 1;
+		canSetAreaShape = 1;
 
 		class AttributeValues {
 			size3[] = {5, 5, 100};
@@ -45,14 +47,14 @@ class CfgVehicles {
 		category = "Supports";
 		function = QFUNC(moduleAddHeliQRFS);
 		scope = 2;
-		scopeCurator = 1;
+		scopeCurator = 2;
 
 		class Arguments {
 			class Classname {
 				displayName = "Classname";
 				description = "Classname of helicopter";
 				typeName = "STRING";
-				defaultValue = "O_Heli_Transport_04_bench_F";
+				defaultValue = """O_Heli_Transport_04_bench_F""";
 			};
 			class Units {
 				displayName = "Units";
@@ -70,7 +72,7 @@ class CfgVehicles {
 				displayName = "Origin";
 				description = "Where does the helicopter come from in regards to the point, as a bearing? 'random' will do a random direction.";
 				typeName = "STRING";
-				defaultValue = "random";
+				defaultValue = """random""";
 			};
 			class Distance {
 				displayName = "Distance";
@@ -88,7 +90,7 @@ class CfgVehicles {
 				displayName = "Condition";
 				description = "Condition for the qrf trigger to fire";
 				typeName = "STRING";
-				defaultValue = "this";
+				defaultValue = """this""";
 			};
 		};
 	};
