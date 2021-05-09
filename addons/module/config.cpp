@@ -41,4 +41,5 @@ class CfgFactionClasses {
     };
 };
 
+#include "Cfg3DEN.hpp"
 #include "CfgVehicles.hpp"

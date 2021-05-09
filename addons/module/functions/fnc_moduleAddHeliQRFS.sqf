@@ -1,6 +1,7 @@
 #include "script_component.hpp"
+
 [{
-	params ["_logic"];
+	params ["_logic", "_synced"];
 	private _position = getPos _logic;
 	disableSerialization;
 	if (isNull (findDisplay 312)) then {
@@ -10,13 +11,18 @@
     	private _classname = _logic getVariable "classname";
     	private _units = _logic getVariable "units";
     	private _size = _logic getVariable "objectarea";
-    	private _triggerTimeout = parseSimpleArray (_logic getVariable "triggertimeout");
+    	private _triggerTimeout = _logic getVariable "triggertimeout";
     	private _origin = _logic getVariable "origin";
-    	private _distance = _logic getVariable "distance";
+    	private _spawnDistance = _logic getVariable "spawnDistance";
     	private _landingDistance = _logic getVariable "landingDistance";
     	private _condition = _logic getVariable "condition";
     	private _triggerArea = _logic getVariable "objectarea";
-    	private _triggerTimeout = [(_triggerTimeout select 0), (_triggerTimeout select 1), (_triggerTimeout select 2), true];
+    	_triggerTimeout = [(_triggerTimeout select 0), (_triggerTimeout select 1), (_triggerTimeout select 2), true];
+
+		/**
+    	private _antenna = createSimpleObject ["OmniDirectionalAntenna_01_black_F", _position];
+    	_antenna setPosATL _position;
+    	*/
 
     	/*
     		Trigger Logic
@@ -60,7 +66,7 @@
     			_classname,
     			_units,
     			_origin,
-    			_distance,
+    			_spawnDistance,
     			_landingDistance
     		],
     		// On Deactive
@@ -77,17 +83,19 @@
     	private _numCargo = [];
         {
             if (getNumber (_x >> "scope") != 2) then {continue};
+            if (getNumber (_x >> "side") != 0) then {continue};
 
             private _class = configName _x;
 
-            if (_class isKindOf "CAManBase" && {getNumber (_x >> "side") == 0}) then {
+            if (_class isKindOf "CAManBase") then {
                 _unitClasses pushBack _class;
             };
-            if (_class isKindOf "Helicopter" && {getNumber (_x >> "side") == 0}) then {
-                _heliClasses pushBack _class;
+            if (_class isKindOf "Helicopter") then {
 				private _cfg = (configFile >> "CfgVehicles" >> _class);
 				private _num = count("if ( isText(_x >> 'proxyType') && { getText(_x >> 'proxyType') isEqualTo 'CPCargo' } ) then {true};"configClasses ( _cfg >> "Turrets" )) + getNumber ( _cfg >> "transportSoldier" );
+				if (num <= 0) then {continue};
 
+                _heliClasses pushBack _class;
 				_numCargo pushBack _num;
             };
         } forEach configProperties [configFile >> "CfgVehicles","isClass _x"];
@@ -110,7 +118,7 @@
 			{
 				params ["_values", "_custom"];
 				_custom params ["_position", "_unitClasses", "_heliClasses", "_numCargo"];
-				_values params ["_classnameIndex", "_origin", "_distance", "_landingdistance"];
+				_values params ["_classnameIndex", "_origin", "_spawnDistance", "_landingdistance"];
 
 				[
 					"Add Heli QRF",
@@ -127,20 +135,20 @@
 					],
 					{
 						params ["_values", "_custom"];
-						_custom params ["_position", "_classname", "_origin", "_distance", "_landingDistance"];
+						_custom params ["_position", "_classname", "_origin", "_spawnDistance", "_landingDistance"];
 						_values params ["_units"];
 
-						[_position, _classname, _units, _origin, _distance, _landingDistance] call qrfs_module_fnc_callInHeliQRF;
+						[_position, _classname, _units, _origin, _spawnDistance, _landingDistance] call qrfs_module_fnc_callInHeliQRF;
 						ZEUS_MESSAGE("QRF Spawned");
 					},
-					[_position, _heliClasses select _classnameIndex, _origin, _distance, _landingDistance]
+					[_position, _heliClasses select _classnameIndex, _origin, _spawnDistance, _landingDistance]
 				] call qrfs_sdf_fnc_dialog;
 			},
 			[_position, _unitClasses, _heliClasses, _numCargo]
 		] call qrfs_sdf_fnc_dialog;
-    };
 
-    deleteVehicle _logic;
+	    deleteVehicle _logic;
+    };
 }, _this] call CBA_fnc_directCall;
 
 

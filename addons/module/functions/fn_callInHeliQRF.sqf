@@ -101,7 +101,6 @@ while {_finding > 0} do {
 		};
 };
 REKA60padArray set [(count REKA60padArray), _targetPos];
-systemChat format ["Landing at %1 - Module at %2", _targetPos, _targetMarker];
 [_targetPos,_distance] spawn {
 	private["_targetPos","_a","_timesLimit","_distance"];
 	_targetPos = _this select 0;
