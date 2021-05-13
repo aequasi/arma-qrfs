@@ -8,21 +8,34 @@
     	if (!isServer) exitWith {};
 
     	// 3den
+    	private _requireSpotted = _logic getVariable "requireSpotted";
     	private _classname = _logic getVariable "classname";
     	private _units = _logic getVariable "units";
     	private _size = _logic getVariable "objectarea";
     	private _triggerTimeout = _logic getVariable "triggertimeout";
     	private _origin = _logic getVariable "origin";
     	private _spawnDistance = _logic getVariable "spawnDistance";
-    	private _landingDistance = _logic getVariable "landingDistance";
+    	private _dropoffDistance = _logic getVariable "dropoffDistance";
     	private _condition = _logic getVariable "condition";
     	private _triggerArea = _logic getVariable "objectarea";
     	_triggerTimeout = [(_triggerTimeout select 0), (_triggerTimeout select 1), (_triggerTimeout select 2), true];
 
+		if (_requireSpotted) then {
+			private _area = [_position];
+			_area append _triggerArea;
+			_condition = format [
+				"%1 && [thisList, %2, %3] call %4;",
+				_condition,
+				_area,
+				east,
+				DFUNC(isSpotted)
+			];
+		};
+
 		/**
     	private _antenna = createSimpleObject ["OmniDirectionalAntenna_01_black_F", _position];
     	_antenna setPosATL _position;
-    	*/
+    	//*/
 
     	/*
     		Trigger Logic
@@ -47,29 +60,24 @@
     	_qrfTrigger setTriggerTimeout _triggerTimeout;
 
     	_notificationTrigger setTriggerStatements [
-    		// Condition
     		_condition,
-    		// On Activate
     		format ["%1 ""You are in danger of having QRFs called in!"";", _channel],
-    		// On Deactivate
     		format ["%1 ""You are no longer in danger of having QRFs called in."";", _channel]
     	];
 
     	_qrfTrigger setTriggerStatements [
-    		// Condition
     		_condition,
-    		// On Activate
     		format [
     			"%1 ""A QRF has been called to your location."";
-    	[(thisList select 0), ""%2"", %3, ""%4"", %5, %6] call qrfs_module_fnc_callInHeliQRF;",
+    	[(thisList select 0), ""%2"", %3, ""%4"", %5, %6] call %7;",
     			_channel,
     			_classname,
     			_units,
     			_origin,
     			_spawnDistance,
-    			_landingDistance
+    			_dropoffDistance,
+    			DFUNC(callInQRF)
     		],
-    		// On Deactive
     		""
     	];
 
@@ -78,7 +86,7 @@
     	*/
     } else {
     	if (!local _logic) exitWith {};
-    	private _heliClasses = [];
+    	private _vehClasses = [];
     	private _unitClasses = [];
     	private _numCargo = [];
         {
@@ -90,25 +98,25 @@
             if (_class isKindOf "CAManBase") then {
                 _unitClasses pushBack _class;
             };
-            if (_class isKindOf "Helicopter") then {
+            if (_class isKindOf "Helicopter" || _class isKindOf "Tank" || _class isKindOf "Car") then {
 				private _cfg = (configFile >> "CfgVehicles" >> _class);
 				private _num = count("if ( isText(_x >> 'proxyType') && { getText(_x >> 'proxyType') isEqualTo 'CPCargo' } ) then {true};"configClasses ( _cfg >> "Turrets" )) + getNumber ( _cfg >> "transportSoldier" );
 				if (num <= 0) then {continue};
 
-                _heliClasses pushBack _class;
+                _vehClasses pushBack _class;
 				_numCargo pushBack _num;
             };
         } forEach configProperties [configFile >> "CfgVehicles","isClass _x"];
 
     	[
-    		"Add Heli QRF",
+    		"Add QRF",
     		[
 				[
 					"COMBOBOX",
 					"Class Name",
 					[
-						_heliClasses apply { [getText (configFile >> "CfgVehicles" >> _x >> "displayName"), _x]},
-						_heliClasses find "O_Heli_Transport_04_bench_F"
+						_vehClasses apply { [getText (configFile >> "CfgVehicles" >> _x >> "displayName"), _x]},
+						_vehClasses find "O_Heli_Transport_04_bench_F"
 					]
 				],
 				["EDITBOX", "Origin", "random"],
@@ -117,11 +125,11 @@
 			],
 			{
 				params ["_values", "_custom"];
-				_custom params ["_position", "_unitClasses", "_heliClasses", "_numCargo"];
-				_values params ["_classnameIndex", "_origin", "_spawnDistance", "_landingdistance"];
+				_custom params ["_position", "_unitClasses", "_vehClasses", "_numCargo"];
+				_values params ["_classnameIndex", "_origin", "_spawnDistance", "_dropoffDistance"];
 
 				[
-					"Add Heli QRF",
+					"Add QRF",
 					[
 						[
 							"CARGOBOX",
@@ -135,16 +143,16 @@
 					],
 					{
 						params ["_values", "_custom"];
-						_custom params ["_position", "_classname", "_origin", "_spawnDistance", "_landingDistance"];
+						_custom params ["_position", "_classname", "_origin", "_spawnDistance", "_dropoffDistance"];
 						_values params ["_units"];
 
-						[_position, _classname, _units, _origin, _spawnDistance, _landingDistance] call qrfs_module_fnc_callInHeliQRF;
+						[_position, _classname, _units, _origin, _spawnDistance, _dropoffDistance] call DFUNC(callInQRF);
 						ZEUS_MESSAGE("QRF Spawned");
 					},
-					[_position, _heliClasses select _classnameIndex, _origin, _spawnDistance, _landingDistance]
+					[_position, _vehClasses select _classnameIndex, _origin, _spawnDistance, _dropoffDistance]
 				] call qrfs_sdf_fnc_dialog;
 			},
-			[_position, _unitClasses, _heliClasses, _numCargo]
+			[_position, _unitClasses, _vehClasses, _numCargo]
 		] call qrfs_sdf_fnc_dialog;
 
 	    deleteVehicle _logic;

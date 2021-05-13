@@ -30,30 +30,36 @@ class CfgVehicles {
 		is3DEN = 0;
 
 		class AttributeValues {
-			size3[] = {5, 5, 100};
+			size3[] = {250, 250, -1};
 		};
 	};
 
-	class GVAR(AddHeliQRFS): GVAR(Base) {
-		displayName = "Add Helicopter QRFS";
-		icon = "z\qrfs\addons\main\ui\icons\heli.paa";
-		function = QFUNC(moduleAddHeliQRFS);
+	class GVAR(AddQRFS): GVAR(Base) {
+		displayName = "Add QRFS";
+		function = QFUNC(moduleAddQRFS);
 		scope = 2;
 		scopeCurator = 2;
 
 		class Attributes: AttributesBase {
+			class RequireSpotted: Default {
+				property = MVAR(requiredSpotted);
+				control = "Checkbox";
+				displayName = "Require Spotted";
+				tooltip = "Does someone inside the radius have to be spotted by the enemy before a QRF can be called in?";
+				defaultValue = "true";
+			};
 			class Classname: Default {
 				property = MVAR(classname);
-				control = GVAR(HelicopterList);
-				displayName = "Helicopter";
-				tooltip = "What helicopter is used to transport the QRF";
+				control = GVAR(OPForVehicleList);
+				displayName = "Vehicle";
+				tooltip = "What Vehicle is used to transport the QRF";
 				defaultValue = """O_Heli_Transport_04_bench_F""";
 			};
 			class Units: Default {
 				property = MVAR(units);
 				control = "EditMulti3";
 				displayName = "Units";
-				tooltip = "Classnames of the units that will be in each helicopter";
+				tooltip = "Classnames of the units that will be in each qrf";
 				defaultValue = "[""O_G_Soldier_SL_F"", ""O_G_medic_F"", ""O_G_Soldier_AR_F"", ""O_G_Soldier_M_F"", ""O_G_Soldier_LAT_F"", ""O_G_Soldier_A_F"", ""O_G_Soldier_F"", ""O_G_Soldier_F""]";
 			};
 			class TriggerTimeout: Default {
@@ -62,13 +68,13 @@ class CfgVehicles {
 			    displayName = "Trigger Timeout";
 			    tooltip = "Time required for enemy units to be in the AO (in seconds)";
 			    typeName = "ARRAY";
-			    defaultValue = "[5, 5, 5]";
+			    defaultValue = "[60, 90, 120]";
 			};
 			class Origin: Default {
 				property = MVAR(origin);
 				control = "EditShort";
 				displayName = "Origin";
-				tooltip = "Where does the helicopter come from in regards to the point, as a bearing? 'random' will do a random direction.";
+				tooltip = "Where does the QRF come from in regards to the point, as a bearing? 'random' will do a random direction.";
 				typeName = "STRING";
 				defaultValue = """random""";
 			};
@@ -85,14 +91,14 @@ class CfgVehicles {
 				property = MVAR(spawnDistance);
 				control = "DynSimDist";
 				displayName = "Spawn Distance";
-				tooltip = "How far away does the helicopter spawn?";
+				tooltip = "How far away does the QRF spawn?";
 				defaultValue = "1500";
 			};
-			class LandingDistance: Default {
-				property = MVAR(landingDistance);
+			class DropoffDistance: Default {
+				property = MVAR(dropoffDistance);
 				control = "DynSimDist";
-				displayName = "Landing Distance";
-				tooltip = "How far away does the helicopter land?";
+				displayName = "Dropoff Distance";
+				tooltip = "How far away does the QRF land?";
 				defaultValue = "100";
 			};
 
@@ -105,7 +111,7 @@ class CfgVehicles {
 
 			class Curator_F {
 				description[] = {
-					"Spawns a Helicopter QRF team that descends down on the players in the zone.",
+					"Spawns a QRF team that descends down on the players in the zone.",
 					"Can place as many of these as you want."
 				};
 				position = 1;

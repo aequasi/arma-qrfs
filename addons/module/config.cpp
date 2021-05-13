@@ -4,7 +4,7 @@ class CfgPatches {
     class qrsf_module {
         name = QUOTE(COMPONENT);
         units[] = {
-            QGVAR(AddHeliQRFS),
+            QGVAR(AddQRFS),
         };
         requiredAddons[] = {
             "A3_Modules_F",
@@ -22,15 +22,6 @@ class CfgPatches {
 };
 
 #include "CfgEventHandlers.hpp"
-
-class CfgFunctions {
-	class qrfs_module {
-		class Main {
-				file = "z\qrfs\addons\module\functions";
-				class callInHeliQRF {};
-		};
-	};
-};
 
 class CfgFactionClasses {
     class qrfsBase;
